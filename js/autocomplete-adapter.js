@@ -2,7 +2,7 @@
  * Autocomplete Adapter
  *
  * @author Daniele Sciannimanica <https://github.com/doishub>
- * @version 0.0.2
+ * @version 0.0.3
  */
 var AutocompleteAdapter = (function () {
 
@@ -58,6 +58,9 @@ var AutocompleteAdapter = (function () {
             }
 
             // create search box
+            createLoader();
+
+            // create search box
             createSearchBox();
 
             // call custom function
@@ -65,7 +68,7 @@ var AutocompleteAdapter = (function () {
         };
 
         /**
-         * Build SearchBox
+         * Create SearchBox
          */
         var createSearchBox = function(){
             // create search box
@@ -105,6 +108,18 @@ var AutocompleteAdapter = (function () {
 
             // close the search box on default
             searchbox('hide');
+        };
+
+        /**
+         * Create Loader
+         */
+        var createLoader = function() {
+            // create search box
+            autocomplete.loader = document.createElement('div');
+            autocomplete.loader.classList.add('autocomplete-loader');
+            autocomplete.input.parentNode.appendChild(autocomplete.loader);
+
+            loader('hide');
         };
 
         /**
@@ -177,6 +192,11 @@ var AutocompleteAdapter = (function () {
 
             var val = autocomplete.input.value.trim();
 
+            // disallow arrow keys, home, end, pageUp and pageDown
+            if ([37, 38, 39, 40, 36, 35, 33, 34].indexOf(e.keyCode) > -1) {
+                return;
+            }
+
             if(sourceLoader !== null)
             {
                 sourceLoader.abort();
@@ -204,6 +224,9 @@ var AutocompleteAdapter = (function () {
                 return;
             }
 
+            // show loader
+            loader('show');
+
             // merge parameter with source url
             var url = autocomplete.settings.sourceUrl;
 
@@ -220,6 +243,9 @@ var AutocompleteAdapter = (function () {
 
                     // clear and hide search box
                     searchbox('clear');
+
+                    // hide loader
+                    loader('hide');
 
                     // create items from response
                     if(results.error.status < 1 && results.data) {
@@ -263,14 +289,28 @@ var AutocompleteAdapter = (function () {
          * @returns {boolean}
          */
         var validate = function(e) {
-            if (e.keyCode === 13 && !autocomplete.allowSubmit && autocomplete.results.length >= 1) {
-                e.stopPropagation();
+            // validate before send form
+            autocomplete.input.form.addEventListener('submit', preventFormSubmit, false);
 
+            if ([13, 9].indexOf(e.keyCode) > -1 && !autocomplete.allowSubmit && autocomplete.results.length >= 1) {
                 selectItem(autocomplete.results[0][1]);
                 autocomplete.allowSubmit = true;
-
-                return false;
             }
+
+            autocomplete.input.form.removeEventListener('submit', preventFormSubmit);
+
+            if(e.keyCode === 13 && autocomplete.allowSubmit){
+                autocomplete.input.form.submit();
+            }
+        };
+
+        /**
+         * Prevent form submit
+         *
+         * @returns {boolean}
+         */
+        var preventFormSubmit = function(){
+            return false;
         };
 
         /**
@@ -307,6 +347,24 @@ var AutocompleteAdapter = (function () {
 
             // call custom function
             callback(autocomplete.settings.onSearchBoxEvent, {mode: mode, autocomplete: autocomplete});
+        };
+
+        /**
+         * Loader helper function
+         *
+         * @param {String} mode
+         */
+        var loader = function(mode){
+            switch (mode) {
+                // hide the loader
+                case 'hide':
+                    autocomplete.loader.style.display='none';
+                    break;
+                // show the loader
+                case 'show':
+                    autocomplete.loader.style.display='block';
+                    break;
+            }
         };
 
         /* Helper methods */
@@ -465,6 +523,15 @@ var AutocompleteAdapter = (function () {
          */
         p.searchbox = function(mode){
             searchbox(mode);
+        };
+
+        /**
+         * Control the Loader behavior
+         *
+         * @param {String} mode: hide, show
+         */
+        p.loader = function(mode){
+            loader(mode);
         };
 
         /**
