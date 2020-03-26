@@ -2,7 +2,7 @@
  * Autocomplete Adapter
  *
  * @author Daniele Sciannimanica <https://github.com/doishub>
- * @version 0.0.1
+ * @version 0.0.2
  */
 var AutocompleteAdapter = (function () {
 
@@ -24,7 +24,9 @@ var AutocompleteAdapter = (function () {
             formFieldRestore: true,             // {Boolean}     Restore field values
             formFields: [                       // {Array|null}  Hidden form fields, which are created and will be filled out after selecting an item
                 "id",
-                "country"
+                "country",
+                "latitude",
+                "longitude",
             ],
             itemFields: [                       // {Array|null}  Attributes that are output for each element
                 "title",
@@ -75,8 +77,8 @@ var AutocompleteAdapter = (function () {
             {
                 var value = storage(autocomplete.settings.formFields[id]);
                 var field = document.createElement('input');
-                    field.setAttribute('type', 'hidden');
-                    field.setAttribute('name', autocomplete.settings.formFieldPrefix + autocomplete.settings.formFields[id]);
+                field.setAttribute('type', 'hidden');
+                field.setAttribute('name', autocomplete.settings.formFieldPrefix + autocomplete.settings.formFields[id]);
 
                 if(value){
                     field.value = value;
@@ -112,18 +114,18 @@ var AutocompleteAdapter = (function () {
          */
         var createItem = function(data){
             var item = document.createElement('div');
-                item.classList.add('autocomplete-item');
-                item.addEventListener('click', function(e){
-                    selectItem(data);
-                });
+            item.classList.add('autocomplete-item');
+            item.addEventListener('click', function(e){
+                selectItem(data);
+            });
 
             for(var ind in autocomplete.settings.itemFields){
                 if(data.hasOwnProperty( autocomplete.settings.itemFields[ind] )){
                     var cont = document.createElement('span');
-                        cont.classList.add(autocomplete.settings.itemFields[ind]);
-                        cont.innerHTML = data[ autocomplete.settings.itemFields[ind] ];
+                    cont.classList.add(autocomplete.settings.itemFields[ind]);
+                    cont.innerHTML = data[ autocomplete.settings.itemFields[ind] ];
 
-                        item.appendChild(cont);
+                    item.appendChild(cont);
                 }
             }
 
@@ -308,7 +310,6 @@ var AutocompleteAdapter = (function () {
         };
 
         /* Helper methods */
-
         var storage = function(variable, value){
             if(autocomplete.settings.formFieldRestore && typeof value !== 'undefined'){
                 return sessionStorage.setItem(variable, value);
@@ -321,7 +322,7 @@ var AutocompleteAdapter = (function () {
 
         var callback = function(func, param){
             if(typeof func === 'function') {
-                func.call(param);
+                func.call(this, param);
                 return true;
             }
 
@@ -444,7 +445,9 @@ var AutocompleteAdapter = (function () {
             return extended;
         };
 
-        /* Public methods */
+        //
+        // Public methods
+        //
 
         /**
          * Return the autocomplete object
@@ -462,6 +465,15 @@ var AutocompleteAdapter = (function () {
          */
         p.searchbox = function(mode){
             searchbox(mode);
+        };
+
+        /**
+         * Control the SearchBox behavior
+         *
+         * @param {{}} data
+         */
+        p.createItem = function(data){
+            createItem(data);
         };
 
         init();
