@@ -30,5 +30,4 @@ Adapter for easy input auto-completion with various sources
 ```
 
 ### Todo
-- npm
 - consider nested JSON data
