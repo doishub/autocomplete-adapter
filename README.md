@@ -1,9 +1,6 @@
 # Autocomplete Adapter
 Adapter for easy input auto-completion with various sources
 
----
-
-<br/> 
 
 ### 🔒  Attention
 **This repo is no longer maintained. Please use alternatives like:**
