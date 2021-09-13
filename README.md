@@ -7,9 +7,6 @@ Adapter for easy input auto-completion with various sources
 > - [algolia](https://www.algolia.com/doc/guides/building-search-ui/ui-and-ux-patterns/autocomplete/js/#autocomplete-or-instantsearchjs)
 > - [autoComplete](https://github.com/TarekRaafat/autoComplete.js)
 
-<br/>
-
----
 
 <br/> 
 
