@@ -1,10 +1,20 @@
 # Autocomplete Adapter
 Adapter for easy input auto-completion with various sources
 
+---
+
+<br/> 
+
 ### 🔒  Attention
-This repo is no longer maintained. Please use alternatives like:
+**This repo is no longer maintained. Please use alternatives like:**
 - [algolia](https://www.algolia.com/doc/guides/building-search-ui/ui-and-ux-patterns/autocomplete/js/#autocomplete-or-instantsearchjs)
 - [autoComplete](https://github.com/TarekRaafat/autoComplete.js)
+
+<br/>
+
+---
+
+<br/> 
 
 ```js
 {
